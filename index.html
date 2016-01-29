@@ -1,0 +1,198 @@
+<html>
+
+  <!---
+
+  僕はリンクアンプ教の人間ではないです
+  あと恥ずかしいのでソースは読まないでください
+
+  -->
+
+  <head>
+
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+    <link rel="stylesheet" type="text/css" href="index.css">
+
+    <title>Link Range Calc</title>
+
+    <script src='https://maps.googleapis.com/maps/api/js?key=AIzaSyA_be8eSBJNiV_jLAnUt7mzVN1nPpwV2ng'></script>
+    <script type="text/javascript" src='gmaps.js'></script>
+
+   </head>
+
+   <body>
+   リンク可能な距離(km)を計算するよ！<br>
+    <form name="range">
+      <input TYPE="text" placeholder="8">
+      <input TYPE="text" placeholder="7">
+      <input TYPE="text" placeholder="6">
+      <input TYPE="text" placeholder="5">
+      <input TYPE="text" placeholder="4">
+      <input TYPE="text" placeholder="3">
+      <input TYPE="text" placeholder="2">
+      <input TYPE="text" placeholder="1">
+
+      <select name="mod">
+        <option value="1">LA無し</option>
+        <option value="2">RLA</option>
+        <option value="7">VRLA</option>
+        <option value="5">SBUL</option>
+      </select>
+      <select name="mod">
+        <option value="1">LA無し</option>
+        <option value="2">RLA</option>
+        <option value="7">VRLA</option>
+        <option value="5">SBUL</option>
+      </select>
+      <select name="mod">
+        <option value="1">LA無し</option>
+        <option value="2">RLA</option>
+        <option value="7">VRLA</option>
+        <option value="5">SBUL</option>
+      </select>
+      <select name="mod">
+        <option value="1">LA無し</option>
+        <option value="2">RLA</option>
+        <option value="7">VRLA</option>
+        <option value="5">SBUL</option>
+      </select>
+
+      <input type="button" value="計算" onclick="Calc()">
+    </form>
+  リンク可能な距離は<span id="range"></span>kmだよ！<br>
+  <p>
+  <div id="map">ここに地図が表示されます</div>
+  Q.まずこれは何？<br>
+  A.ingressというゲームにおけるリンク可能距離の計算機です。まだ初めて無いのなら是非レジスタンス（青）で始めましょう！<br>
+  <p>
+  Q.このサイトダサくない？<br>
+  A.いわないでいつか見た目作る<br>
+  <p>
+  ♡使い方♡<br>
+  8つのテキストボックスにはレゾネータのレベルを入力してください。<br>
+  4つのセレクトボックスはリンクアンプの選択です<br>
+  素のリンク距離は 160m * (レゾの平均Lv)^4で、<br>
+  リンクアンプは2つめから効果が1/4,1/8,1/12と減っていきます（（このへんがイマイチ理解できてない<br>
+  まあそんなカンジです。<br>
+  RLA ... 2x<br>
+  VRLA ... 7x<br>
+  SBUL ... 5x
+
+
+  <script type="text/javascript">
+
+  /* 初期位置 */
+  function success(position){
+    data = position.coords;
+    lat = data.latitude;
+    lng = data.longitude;
+    map = new GMaps({
+      div: "#map",
+      lat: lat,
+      lng: lng,
+      zoom: 15,
+    });
+    marker = map.addMarker({
+      lat: lat,
+      lng: lng,
+      title: "now location",
+    });
+  };
+  function error(error){
+    lat = 34.604606;
+    lng = 136.121238;
+    map = new GMaps({
+      div: "#map",
+      lat: lat,
+      lng: lng,
+      zoom: 15,
+    });
+    marker = map.addMarker({
+      lat: lat,
+      lng: lng,
+      title: "Ningen Sanka",
+    });
+  };
+  navigator.geolocation.getCurrentPosition(success, error);
+
+  /* 計算機本体 */
+  function Calc() {
+    var range;
+    var sum = 0;
+    for(var i = 0; i < 8; i++){
+      sum += parseInt(document.range.elements[i].value);
+    }
+    var la = parseInt(document.range.elements[8].value);
+    
+    var j = 1;
+    for(i = 9; i < 12; i++){
+      var amp = parseInt(document.range.elements[i].value);
+      if(amp != 1){
+        la += amp / (j * 4);
+        j++;
+      }
+    }
+    
+    range = 160 * Math.pow((sum / 8), 4) / 1000 * la;
+    document.getElementById("range").innerHTML = range;
+
+    /* 円を描く */
+    navigator.geolocation.getCurrentPosition(
+      function(pos){
+        data = pos.coords;
+        lat = data.latitude;
+        lng = data.longitude;
+        map = new GMaps({
+          div: "#map",
+          lat: lat,
+          lng: lng,
+          zoom: 15,
+        });
+        circle = map.drawCircle({
+          lat: lat,
+          lng: lng,
+          radius: range * 1000,
+          strokeColor: '#ff0000',
+          fillOpacity: 0.5,
+          strokeOpacity: 1,
+          strokeWeight: 1,
+          strokeColor: '#000000'
+        });
+        marker = map.addMarker({
+          lat: lat,
+          lng: lng,
+          title: "now location",
+        });
+      },
+      function(err){
+        lat = 34.604606;
+        lng = 136.121238;
+        map = new GMaps({
+          div: "#map",
+          lat: lat,
+          lng: lng,
+          zoom: 15,
+        });
+        circle = map.drawCircle({
+          lat: lat,
+          lng: lng,
+          radius: range * 1000,
+          strokeColor: '#ff0000',
+          fillOpacity: 0.5,
+          strokeOpacity: 1,
+          strokeWeight: 1,
+          strokeColor: '#000000'
+        });
+        marker = map.addMarker({
+          lat: lat,
+          lng: lng,
+          title: "Ningen Sanka",
+        });
+      });
+  }
+
+
+    </script>
+
+  </body>
+</html>
