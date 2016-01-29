@@ -18,3 +18,9 @@ body{
 	color: #0000FF;
 	font-weight: bold;
 }
+
+.mao{
+	width: 32px;
+	height: 32px;
+    border-radius: 50%;
+}
