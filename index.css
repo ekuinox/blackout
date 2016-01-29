@@ -1,10 +1,14 @@
 /* 小路綾ちゃんと結婚 */
 
-input{
-	width: 3%;
+body{
+	text-align: center;
 }
 
 #map{
 	width: auto;
 	height: 70%;
+}
+
+.resonator{
+	width: 10%;
 }
