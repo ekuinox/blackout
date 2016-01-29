@@ -11,4 +11,10 @@ body{
 
 .resonator{
 	width: 10%;
+	text-align: center;
+}
+
+#range{
+	color: #0000FF;
+	font-weight: bold;
 }
